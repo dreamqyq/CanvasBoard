@@ -55,44 +55,92 @@ function userAction(tag) {
 
   userSelect();
 
-  tag.onmousedown = function(point) {
-    var pointX = point.clientX,
-      pointY = point.clientY;
-    isUsing = true;
-    if (isClear) {
-      eraserFn(pointX, pointY);
-    } else {
-      lastPoint.x = pointX;
-      lastPoint.y = pointY;
-      drawCircle(pointX, pointY);
-    }
-  }
-
-  tag.onmousemove = function(point) {
-    var pointX = point.clientX,
-      pointY = point.clientY,
-      newPoint = {
-        x: pointX,
-        y: pointY
-      };
-
-    if (!isUsing) {return}
-    if (isUsing) {
+  // 特性检测
+  if (document.body.ontouchstart !== undefined) {
+    // 支持触摸事件
+    tag.ontouchstart = function(point) {
+      var pointX = point.touches[0].clientX,
+          pointY = point.touches[0].clientY;
+      isUsing = true;
       if (isClear) {
         eraserFn(pointX, pointY);
       } else {
-        drawLine(lastPoint.x, lastPoint.y, newPoint.x, newPoint.y);
+        lastPoint.x = pointX;
+        lastPoint.y = pointY;
+        drawCircle(pointX, pointY);
+      }
+    }
+    tag.ontouchmove = function(point) {
+      var pointX = point.touches[0].clientX,
+          pointY = point.touches[0].clientY,
+          newPoint = {
+            x: pointX,
+            y: pointY
+          };
+
+      if (!isUsing) {
+        return
+      }
+      if (isUsing) {
+        if (isClear) {
+          eraserFn(pointX, pointY);
+        } else {
+          drawLine(lastPoint.x, lastPoint.y, newPoint.x, newPoint.y);
+        }
+      }
+
+      lastPoint.x = pointX;
+      lastPoint.y = pointY;
+    }
+    tag.ontouchend = function(point) {
+      isUsing = false;
+    }
+
+  } else {
+    //不支持触摸事件
+    tag.onmousedown = function(point) {
+      var pointX = point.clientX,
+        pointY = point.clientY;
+      isUsing = true;
+      if (isClear) {
+        eraserFn(pointX, pointY);
+      } else {
+        lastPoint.x = pointX;
+        lastPoint.y = pointY;
+        drawCircle(pointX, pointY);
       }
     }
 
-    lastPoint.x = pointX;
-    lastPoint.y = pointY;
+    tag.onmousemove = function(point) {
+      var pointX = point.clientX,
+        pointY = point.clientY,
+        newPoint = {
+          x: pointX,
+          y: pointY
+        };
 
+      if (!isUsing) {
+        return
+      }
+      if (isUsing) {
+        if (isClear) {
+          eraserFn(pointX, pointY);
+        } else {
+          drawLine(lastPoint.x, lastPoint.y, newPoint.x, newPoint.y);
+        }
+      }
+
+      lastPoint.x = pointX;
+      lastPoint.y = pointY;
+
+    }
+
+    tag.onmouseup = function(point) {
+      isUsing = false;
+    }
   }
 
-  tag.onmouseup = function(point) {
-    isUsing = false;
-  }
+
 }
 
 // 用户动作类型
