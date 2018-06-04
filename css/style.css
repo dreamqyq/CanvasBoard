@@ -4,4 +4,24 @@
 }
 #canvas{
 	background: gray;
+	display: block;
+}
+.btnBox{
+	position: fixed;
+	bottom: 0px;
+	left: 0px;
+}
+.btnBox > button{
+	width: 70px;
+	height: 30px;
+	outline: none;
+}
+.btnBox > #eraser{
+	display: none;
+}
+.btnBox.active > #eraser{
+	display: inline-block;
+}
+.btnBox.active > #brush{
+	display: none;
 }

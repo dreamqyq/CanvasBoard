@@ -1,55 +1,116 @@
 var canvas = document.getElementById('canvas'),
-    context = canvas.getContext('2d'),
-    isPainting = false,
-    point1 = {},
-    point2 = {};
+  context = canvas.getContext('2d');
 
-canvasInit();
+var isClear = false;
 
-function canvasInit(){
-  canvas.width = document.documentElement.clientWidth;
-  canvas.height = document.documentElement.clientHeight; 
+autoResizeCanvas()
+
+userAction(canvas);
+
+
+
+/*****功能函数*****/
+
+//初始化画布
+function canvasInit(tag) {
+  tag.width = document.documentElement.clientWidth;
+  tag.height = document.documentElement.clientHeight;
 }
 
-window.onresize = function(){
-  canvasInit();
+// 画布大小自动调整
+function autoResizeCanvas() {
+  canvasInit(canvas);
+
+  window.onresize = function() {
+    canvasInit(canvas);
+  }
 
 }
 
-
-
-function drawLine (x1,y1,x2,y2){
+//绘制路径
+function drawLine(x1, y1, x2, y2) {
   context.beginPath();
-  context.moveTo(x1,y1);
-  context.lineTo(x2,y2);
-  context.lineWidth = 5;
+  context.moveTo(x1, y1);
+  context.lineTo(x2, y2);
+  context.lineWidth = 4;
   context.stroke();
   context.closePath();
 }
 
-
-
-canvas.onmousedown = function(point){
-  var pointX = point.clientX,
-      pointY = point.clientY;
-  isPainting = true;
-  
-  point1 = {x:pointX,y:pointY};
-  
+//绘制圆形
+function drawCircle(x, y) {
+  context.beginPath();
+  context.arc(x, y, 2, 0, Math.PI * 2);
+  context.fill();
 }
 
-canvas.onmousemove = function(point){
-  var pointX = point.clientX,
+
+//用户动作
+function userAction(tag) {
+  var isUsing = false,
+    lastPoint = {
+      x: undefined,
+      y: undefined
+    };
+
+  userSelect();
+
+  tag.onmousedown = function(point) {
+    var pointX = point.clientX,
       pointY = point.clientY;
-  point2 = {x:pointX,y:pointY}
-  if(isPainting){
-    
-    drawLine(point1.x,point1.y,point2.x,point2.y)
+    isUsing = true;
+    if (isClear) {
+      eraserFn(pointX, pointY);
+    } else {
+      lastPoint.x = pointX;
+      lastPoint.y = pointY;
+      drawCircle(pointX, pointY);
+    }
   }
-  point1.x = pointX;
-  point1.y = pointY;
- 
+
+  tag.onmousemove = function(point) {
+    var pointX = point.clientX,
+      pointY = point.clientY,
+      newPoint = {
+        x: pointX,
+        y: pointY
+      };
+
+    if (!isUsing) {return}
+    if (isUsing) {
+      if (isClear) {
+        eraserFn(pointX, pointY);
+      } else {
+        drawLine(lastPoint.x, lastPoint.y, newPoint.x, newPoint.y);
+      }
+    }
+
+    lastPoint.x = pointX;
+    lastPoint.y = pointY;
+
+  }
+
+  tag.onmouseup = function(point) {
+    isUsing = false;
+  }
 }
-canvas.onmouseup = function(point){
-  isPainting = false;
+
+// 用户动作类型
+function userSelect() {
+  var brushBtn = document.getElementById('brush'),
+    eraserBtn = document.getElementById('eraser'),
+    btnBox = document.getElementById('btnBox');
+  brushBtn.onclick = function() {
+    btnBox.className = 'btnBox active';
+    isClear = true;
+  }
+  eraserBtn.onclick = function() {
+    btnBox.className = 'btnBox';
+    isClear = false;
+  }
+}
+
+// 橡皮擦函数
+function eraserFn(x, y) {
+  context.clearRect(x - 5, y - 5, 10, 10)
 }
