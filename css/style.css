@@ -2,26 +2,26 @@
 	margin:0;
 	padding:0;
 }
-#canvas{
+.canvas{
 	background: gray;
 	display: block;
-}
-.btnBox{
 	position: fixed;
-	bottom: 0px;
+	top: 0;
+	left: 0;
+}
+.userBtn{
+	position: fixed;
+	top: 0px;
 	left: 0px;
 }
-.btnBox > button{
-	width: 70px;
-	height: 30px;
-	outline: none;
+.userBtn > svg{
+	height: 2em;
+	width: 2em;
+	fill: #000;
 }
-.btnBox > #eraser{
-	display: none;
+.userBtn > .eraser{
 }
-.btnBox.active > #eraser{
+.userBtn > .brush{
 	display: inline-block;
 }
-.btnBox.active > #brush{
-	display: none;
-}
+

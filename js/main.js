@@ -146,15 +146,16 @@ function userAction(tag) {
 // 用户动作类型
 function userSelect() {
   var brushBtn = document.getElementById('brush'),
-    eraserBtn = document.getElementById('eraser'),
-    btnBox = document.getElementById('btnBox');
+    eraserBtn = document.getElementById('eraser');
   brushBtn.onclick = function() {
-    btnBox.className = 'btnBox active';
-    isClear = true;
+    // btnBox.className = 'btnBox active';
+    isClear = false;
+    console.log(1)
   }
   eraserBtn.onclick = function() {
-    btnBox.className = 'btnBox';
-    isClear = false;
+    // btnBox.className = 'btnBox';
+    isClear = true;
+    console.log(2)
   }
 }
 
