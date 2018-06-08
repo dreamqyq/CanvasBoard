@@ -65,8 +65,12 @@ function userAction(tag) {
       y: undefined
     };
   context.lineWidth = 4;
+  // 用户选择笔刷or橡皮擦
   userSelect();
-  btnFn();
+  // 笔刷重置（笔刷大小颜色）
+  brushReset();
+  // 图像下载
+  downloadPic();
   // 特性检测
   if (document.body.ontouchstart !== undefined) {
     // 支持触摸事件
@@ -180,7 +184,7 @@ function eraserFn(x, y) {
 
 
 //按钮功能函数
-function btnFn (){
+function brushReset (){
   var clearBtn = byId('delete'),
       blackBtn = byId('blackBtn'),
       redBtn = byId('redBtn'),
@@ -250,3 +254,17 @@ function btnFn (){
   }
 }
 
+// 下载图像函数
+function downloadPic (){
+  var downloadBtn = byId('download'),
+      body = byId('body');
+  downloadBtn.onclick = function(){
+    var url = canvas.toDataURL('img/png');
+    var aTag = document.createElement('a');
+    body.appendChild(aTag);
+    aTag.href = url;
+    aTag.download = 'mypic';
+    aTag.target = '_blank';
+    aTag.click();
+  }
+}
