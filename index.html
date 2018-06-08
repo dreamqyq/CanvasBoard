@@ -18,18 +18,29 @@
 <body>
 	<canvas id='canvas' class="canvas"></canvas>
 	<div class="userBtn">
-		<svg class="brush" id="brush">
+		<svg class="brush svgActive" id="brush">
 	   		<use xlink:href="#icon-pen"></use>
 		</svg>
 		<svg class="eraser" id="eraser">
 	   		<use xlink:href="#icon-eraser"></use>
 		</svg>
-		<svg class="download" id="download">
-	   		<use xlink:href="#icon-download"></use>
-		</svg>
 		<svg class="delete" id="delete">
 	   		<use xlink:href="#icon-delete"></use>
 		</svg>
+		<svg class="download" id="download">
+	   		<use xlink:href="#icon-download"></use>
+		</svg>
+		<ul class="lineWidth">
+			<li class="thin" id="thinBtn"></li>
+			<li class="normal btnActive" id="normalBtn"></li>
+			<li class="wide" id="wideBtn"></li>
+		</ul>
+		<ul class="brushColor" id="brushColor">
+			<li class="black btnActive" id="blackBtn"></li>
+			<li class="red" id="redBtn"></li>
+			<li class="green" id="greenBtn"></li>
+			<li class="blue" id="blueBtn"></li> 
+		</ul>
 
 	</div>
 
