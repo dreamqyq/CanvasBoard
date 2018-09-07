@@ -7,6 +7,23 @@ autoResizeCanvas()
 
 userAction(canvas);
 
+changeSize()
+function changeSize(){
+  let sizeBtn = byId('size')  
+  let sizeRanks = sizeBtn.children
+  let num = 1
+  sizeBtn.onclick = function(){
+    for(let i = 0; i < sizeRanks.length; i++ ){
+      sizeRanks[i].classList.remove('active')
+    }
+    sizeRanks[num].classList.add('active')
+    context.lineWidth = (num +1)* 2;
+    num += 1
+    if(num >= sizeRanks.length){
+      num = 0
+    }
+  }
+}
 
 /*****功能函数*****/
 
@@ -64,7 +81,7 @@ function userAction(tag) {
       x: undefined,
       y: undefined
     };
-  context.lineWidth = 4;
+  context.lineWidth = 2;
   // 用户选择笔刷or橡皮擦
   userSelect();
   // 笔刷重置（笔刷大小颜色）
@@ -189,10 +206,7 @@ function brushReset (){
       blackBtn = byId('blackBtn'),
       redBtn = byId('redBtn'),
       greenBtn = byId('greenBtn'),
-      blueBtn = byId('blueBtn'),
-      thinBtn = byId('thinBtn'),
-      normalBtn = byId('normalBtn'),
-      wideBtn = byId('wideBtn');
+      blueBtn = byId('blueBtn');
   clearBtn.onclick = function(){
     drawRect(0,0,canvas.width,canvas.height,'#fff');
     // context.clearRect(0,0,canvas.width,canvas.height)：
@@ -230,27 +244,6 @@ function brushReset (){
     redBtn.classList.remove('btnActive');
     greenBtn.classList.remove('btnActive');
     blueBtn.classList.add('btnActive');
-  }
-  // 路径宽度更改
-  thinBtn.onclick = function(){
-    context.lineWidth = 2;
-    thinBtn.classList.add('btnActive');
-    normalBtn.classList.remove('btnActive');
-    wideBtn.classList.remove('btnActive');
-  }
-  normalBtn.onclick = function(){
-    context.lineWidth = 4;
-    thinBtn.classList.remove('btnActive');
-    normalBtn.classList.add('btnActive');
-    wideBtn.classList.remove('btnActive');
-
-  }
-  wideBtn.onclick = function(){
-    context.lineWidth = 8;
-    thinBtn.classList.remove('btnActive');
-    normalBtn.classList.remove('btnActive');
-    wideBtn.classList.add('btnActive');
-
   }
 }
 

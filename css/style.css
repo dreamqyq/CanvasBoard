@@ -22,33 +22,25 @@ li{
 .userBtn > svg{
 	height: 2em;
 	width: 2em;
-	fill: #000;
+	fill: #183545;
 	margin: 0 10px;
 	transition: all 0.3s;
+  cursor:pointer;
 }
 .userBtn > .eraser{
 }
+.userBtn > .size{
+  margin: 0 20px;
+  transform: scale(2.2);
+}
+.userBtn > .size > use{
+  display:none;
+}
+.userBtn > .size > use.active{
+  display:inline;
+}
 .userBtn > .brush{
 	display: inline-block;
-}
-.userBtn > 	.lineWidth{
-	position: fixed;
-	right: 10px;
-	top: 0;
-}
-.userBtn > .lineWidth > li{
-	width: 30px;
-	background: #000;
-	margin: 20px 0;
-}
-.userBtn > .lineWidth > .thin{
-	height: 2px;
-}
-.userBtn > .lineWidth > .normal{
-	height: 4px;
-}
-.userBtn > .lineWidth > .wide{
-	height: 8px;
 }
 .userBtn > .brushColor{
 	position: fixed;
@@ -84,4 +76,9 @@ li{
 .userBtn > svg.svgActive{
 	transform: scale(1.3);
 	fill: red;
+}
+.download{
+  position:fixed;
+  right:10px;
+  top:10px;
 }
