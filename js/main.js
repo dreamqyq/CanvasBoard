@@ -1,263 +1,230 @@
-var canvas = byId('canvas'),
-  context = canvas.getContext('2d');
-
-var isClear = false;
-
-autoResizeCanvas()
-
-userAction(canvas);
-
-changeSize()
-function changeSize(){
-  let sizeBtn = byId('size')  
-  let sizeRanks = sizeBtn.children
-  let num = 1
-  sizeBtn.onclick = function(){
-    for(let i = 0; i < sizeRanks.length; i++ ){
-      sizeRanks[i].classList.remove('active')
-    }
-    sizeRanks[num].classList.add('active')
-    context.lineWidth = (num +1)* 2;
-    num += 1
-    if(num >= sizeRanks.length){
-      num = 0
-    }
-  }
-}
-
-/*****功能函数*****/
-
-// 封装一个getElementById函数
-function byId (tag){
-  return document.getElementById(tag);
-}
-
-
-//初始化画布
-function canvasInit(tag) {
-  tag.width = document.documentElement.clientWidth;
-  tag.height = document.documentElement.clientHeight;
-}
-
-// 画布大小自动调整
-function autoResizeCanvas() {
-  canvasInit(canvas);
-
-  window.onresize = function() {
-    canvasInit(canvas);
+class Draw {
+  constructor(selector) {
+    this.view = selector
   }
 
-}
+  init() {
+    this.domView = this.byId(this.view)
+    this.context = this.domView.getContext('2d')
+    this.isClear = false
+    this.autoResizeCanvas()
+    this.userAction(this.domView)
+    this.changeSize()
+  }
 
-//绘制路径
-function drawLine(x1, y1, x2, y2) {
-  context.beginPath();
-  context.moveTo(x1, y1);
-  context.lineTo(x2, y2);
-  // context.lineWidth = 4;
-  context.stroke();
-  context.closePath();
-}
+  byId(tag) {
+    return document.getElementById(tag);
+  }
 
-//绘制圆形
-function drawCircle(x, y) {
-  context.beginPath();
-  context.arc(x, y, 2, 0, Math.PI * 2);
-  context.fill();
-}
-
-//绘制矩形
-function drawRect(x1,y1,x2,y2,color){
-  color = color || '#000';
-  context.fillStyle = color;
-  context.fillRect(x1,y1,x2,y2);
-}
-
-
-//用户动作
-function userAction(tag) {
-  var isUsing = false,
-    lastPoint = {
-      x: undefined,
-      y: undefined
-    };
-  context.lineWidth = 2;
-  // 用户选择笔刷or橡皮擦
-  userSelect();
-  // 笔刷重置（笔刷大小颜色）
-  brushReset();
-  // 图像下载
-  downloadPic();
-  // 特性检测
-  if (document.body.ontouchstart !== undefined) {
-    // 支持触摸事件
-    tag.ontouchstart = function(point) {
-      var pointX = point.touches[0].clientX,
-          pointY = point.touches[0].clientY;
-      isUsing = true;
-      if (isClear) {
-        eraserFn(pointX, pointY);
-      } else {
-        lastPoint.x = pointX;
-        lastPoint.y = pointY;
-        drawCircle(pointX, pointY);
+  changeSize() {
+    let sizeBtn = this.byId('size')
+    let sizeRanks = sizeBtn.children
+    let num = 1
+    sizeBtn.addEventListener('click', () => {
+      for (let i = 0; i < sizeRanks.length; i++) {
+        sizeRanks[i].classList.remove('active')
       }
+      sizeRanks[num].classList.add('active')
+      this.context.lineWidth = (num + 1) * 2;
+      num += 1
+      if (num >= sizeRanks.length) {
+        num = 0
+      }
+    })
+  }
+
+  canvasInit(tag) {
+    tag.width = document.documentElement.clientWidth;
+    tag.height = document.documentElement.clientHeight;
+  }
+
+  autoResizeCanvas() {
+    this.canvasInit(canvas);
+
+    window.onresize = function () {
+      this.canvasInit(canvas);
     }
-    tag.ontouchmove = function(point) {
-      var pointX = point.touches[0].clientX,
+
+  }
+
+  drawLine(x1, y1, x2, y2) {
+    this.context.beginPath();
+    this.context.moveTo(x1, y1);
+    this.context.lineTo(x2, y2);
+    this.context.stroke();
+    this.context.closePath();
+  }
+
+  drawCircle(x, y) {
+    this.context.beginPath();
+    this.context.arc(x, y, 2, 0, Math.PI * 2);
+    this.context.fill();
+  }
+
+  //绘制矩形
+  drawRect(x1, y1, x2, y2, color) {
+    color = color || '#000';
+    this.context.fillStyle = color;
+    this.context.fillRect(x1, y1, x2, y2);
+  }
+  userAction(tag) {
+    var isUsing = false,
+      lastPoint = {
+        x: undefined,
+        y: undefined
+      };
+    this.context.lineWidth = 2;
+    // 用户选择笔刷or橡皮擦
+    this.userSelect();
+    // 笔刷重置（笔刷大小颜色）
+    this.brushReset();
+    // 图像下载
+    this.downloadPic();
+    // 特性检测
+    if (document.body.ontouchstart !== undefined) {
+      // 支持触摸事件
+      tag.addEventListener( 'touchstart' ,  point => {
+        var pointX = point.touches[0].clientX,
+          pointY = point.touches[0].clientY;
+        isUsing = true;
+        if (this.isClear) {
+          this.eraserFn(pointX, pointY);
+        } else {
+          lastPoint.x = pointX;
+          lastPoint.y = pointY;
+          this.drawCircle(pointX, pointY);
+        }
+      })
+      tag.addEventListener('touchmove', point => {
+        var pointX = point.touches[0].clientX,
           pointY = point.touches[0].clientY,
           newPoint = {
             x: pointX,
             y: pointY
           };
 
-      if (!isUsing) {
-        return
-      }
-      if (isUsing) {
-        if (isClear) {
-          eraserFn(pointX, pointY);
-        } else {
-          drawLine(lastPoint.x, lastPoint.y, newPoint.x, newPoint.y);
+        if (!isUsing) {
+          return
         }
-      }
-
-      lastPoint.x = pointX;
-      lastPoint.y = pointY;
-    }
-    tag.ontouchend = function(point) {
-      isUsing = false;
-    }
-
-  } else {
-    //不支持触摸事件
-    tag.onmousedown = function(point) {
-      var pointX = point.clientX,
-        pointY = point.clientY;
-      isUsing = true;
-      if (isClear) {
-        eraserFn(pointX, pointY);
-      } else {
+        if (isUsing) {
+          if (this.isClear) {
+            this.eraserFn(pointX, pointY);
+          } else {
+            this.drawLine(lastPoint.x, lastPoint.y, newPoint.x, newPoint.y);
+          }
+        }
         lastPoint.x = pointX;
         lastPoint.y = pointY;
-        drawCircle(pointX, pointY);
-      }
-    }
+      })
+      tag.addEventListener('touchend', point => {
+        isUsing = false;
+      })
 
-    tag.onmousemove = function(point) {
-      var pointX = point.clientX,
-        pointY = point.clientY,
-        newPoint = {
-          x: pointX,
-          y: pointY
-        };
-
-      if (!isUsing) {
-        return
-      }
-      if (isUsing) {
-        if (isClear) {
-          eraserFn(pointX, pointY);
+    } else {
+      //不支持触摸事件
+      tag.addEventListener('mousedown', point => {
+        var pointX = point.clientX,
+          pointY = point.clientY;
+        isUsing = true;
+        if (this.isClear) {
+          this.eraserFn(pointX, pointY);
         } else {
-          drawLine(lastPoint.x, lastPoint.y, newPoint.x, newPoint.y);
+          lastPoint.x = pointX;
+          lastPoint.y = pointY;
+          this.drawCircle(pointX, pointY);
         }
+      })
+
+      tag.addEventListener('mousemove', point => {
+        var pointX = point.clientX,
+          pointY = point.clientY,
+          newPoint = {
+            x: pointX,
+            y: pointY
+          };
+
+        if (!isUsing) { return }
+        if (isUsing) {
+          if (this.isClear) {
+            this.eraserFn(pointX, pointY);
+          } else {
+            this.drawLine(lastPoint.x, lastPoint.y, newPoint.x, newPoint.y);
+          }
+        }
+        lastPoint.x = pointX;
+        lastPoint.y = pointY;
+      })
+      tag.addEventListener('mouseup', point => {
+        isUsing = false;
+      })
+    }
+  }
+
+  userSelect() {
+    var brushBtn = this.byId('brush'),
+      eraserBtn = this.byId('eraser');
+    brushBtn.addEventListener('click', () => {
+      this.isClear = false;
+      eraserBtn.classList.remove('svgActive');
+      brushBtn.classList.add('svgActive');
+    })
+    eraserBtn.addEventListener('click', () => {
+      this.isClear = true;
+      eraserBtn.classList.add('svgActive');
+      brushBtn.classList.remove('svgActive');
+    })
+  }
+
+  // 橡皮擦函数
+  eraserFn(x, y) {
+    this.context.clearRect(x - 5, y - 5, 10, 10);
+  }
+
+  colorListener(element, eventType, selector, callback) {
+    element.addEventListener(eventType, event => {
+      let currentColor = event.target
+      if (currentColor.matches(selector)) {
+        let color = currentColor.dataset.color
+        let siblings = element.children
+        callback.call(currentColor, event, currentColor, color, siblings, element)
       }
+    })
+  }
 
-      lastPoint.x = pointX;
-      lastPoint.y = pointY;
+  //按钮功能函数
+  brushReset() {
+    var clearBtn = this.byId('delete'),
+      brushColors = this.byId('brushColor');
+    clearBtn.addEventListener('click', () => {
+      this.drawRect(0, 0, canvas.width, canvas.height, '#fff');
+    }) 
 
+    //颜色更改
+    this.colorListener(brushColors, 'click', 'li', (event, current, color, siblings, parent) => {
+      this.context.fillStyle = color
+      this.context.strokeStyle = color
+      for(let i = 0; i < siblings.length; i++){
+        siblings[i].classList.remove('btnActive')
+      }
+      current.classList.add('btnActive');
+    })
+  }
+
+    // 下载图像函数
+    downloadPic() {
+      var downloadBtn = this.byId('download'),
+        body = this.byId('body');
+      downloadBtn.onclick = function () {
+        var url = canvas.toDataURL('img/png');
+        var aTag = document.createElement('a');
+        body.appendChild(aTag);
+        aTag.href = url;
+        aTag.download = 'mypic';
+        aTag.target = '_blank';
+        aTag.click();
+      }
     }
-
-    tag.onmouseup = function(point) {
-      isUsing = false;
-    }
   }
 
-
-}
-
-// 用户动作类型
-function userSelect() {
-  var brushBtn = byId('brush'),
-    eraserBtn = byId('eraser');
-  brushBtn.onclick = function() {
-    // btnBox.className = 'btnBox active';
-    isClear = false;
-    eraserBtn.classList.remove('svgActive');
-    brushBtn.classList.add('svgActive');
-  }
-  eraserBtn.onclick = function() {
-    // btnBox.className = 'btnBox';
-    isClear = true;
-    eraserBtn.classList.add('svgActive');
-    brushBtn.classList.remove('svgActive');
-  }
-}
-
-// 橡皮擦函数
-function eraserFn(x, y) {
-  context.clearRect(x - 5, y - 5, 10, 10);
-}
-
-
-//按钮功能函数
-function brushReset (){
-  var clearBtn = byId('delete'),
-      blackBtn = byId('blackBtn'),
-      redBtn = byId('redBtn'),
-      greenBtn = byId('greenBtn'),
-      blueBtn = byId('blueBtn');
-  clearBtn.onclick = function(){
-    drawRect(0,0,canvas.width,canvas.height,'#fff');
-    // context.clearRect(0,0,canvas.width,canvas.height)：
-  }
-  //颜色更改
-  blackBtn.onclick = function(){
-    context.fillStyle = '#000';
-    context.strokeStyle = '#000';
-    blackBtn.classList.add('btnActive');
-    redBtn.classList.remove('btnActive');
-    greenBtn.classList.remove('btnActive');
-    blueBtn.classList.remove('btnActive');
-  }
-  redBtn.onclick = function(){
-    context.fillStyle = '#ff0000';
-    context.strokeStyle = '#ff0000';
-    blackBtn.classList.remove('btnActive');
-    redBtn.classList.add('btnActive');
-    greenBtn.classList.remove('btnActive');
-    blueBtn.classList.remove('btnActive');
-
-  }
-  greenBtn.onclick = function(){
-    context.fillStyle = '#00ff00';
-    context.strokeStyle = '#00ff00';
-    blackBtn.classList.remove('btnActive');
-    redBtn.classList.remove('btnActive');
-    greenBtn.classList.add('btnActive');
-    blueBtn.classList.remove('btnActive');
-  }
-  blueBtn.onclick = function(){
-    context.fillStyle = '#0000ff';
-    context.strokeStyle = '#0000ff'; 
-    blackBtn.classList.remove('btnActive');
-    redBtn.classList.remove('btnActive');
-    greenBtn.classList.remove('btnActive');
-    blueBtn.classList.add('btnActive');
-  }
-}
-
-// 下载图像函数
-function downloadPic (){
-  var downloadBtn = byId('download'),
-      body = byId('body');
-  downloadBtn.onclick = function(){
-    var url = canvas.toDataURL('img/png');
-    var aTag = document.createElement('a');
-    body.appendChild(aTag);
-    aTag.href = url;
-    aTag.download = 'mypic';
-    aTag.target = '_blank';
-    aTag.click();
-  }
-}
+let draw = new Draw('canvas')
+draw.init.call(draw)

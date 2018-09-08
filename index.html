@@ -2,18 +2,10 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 	<title>CanvasBoard</title>
 	<link rel="stylesheet" href="css/style.css">
 	<script src="//at.alicdn.com/t/font_695369_17zqbgq6kyz.js"></script>
-	<style type="text/css">
-	    .icon {
-	       width: 1em; height: 1em;
-	       vertical-align: -0.15em;
-	       fill: currentColor;
-	       overflow: hidden;
-	    }
-	</style>
 </head>
 <body id="body">
 	<canvas id='canvas' class="canvas"></canvas>
@@ -35,10 +27,10 @@
 	   		<use class="sizeRank5"  xlink:href="#icon-size_size"></use>
 		</svg>
 		<ul class="brushColor" id="brushColor">
-			<li class="black btnActive" id="blackBtn"></li>
-			<li class="red" id="redBtn"></li>
-			<li class="green" id="greenBtn"></li>
-			<li class="blue" id="blueBtn"></li> 
+			<li class="black btnActive" id="blackBtn" data-color="black"></li>
+			<li class="red" id="redBtn" data-color="red"></li>
+			<li class="green" id="greenBtn" data-color="green"></li>
+			<li class="blue" id="blueBtn" data-color="blue"></li> 
 		</ul>
 		<svg class="download" id="download">
 	   		<use xlink:href="#icon-download"></use>

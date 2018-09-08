@@ -1,34 +1,15 @@
-*{
-	margin:0;
-	padding:0;
+*{ margin:0; padding:0; }
+li{ list-style: none; transition: all 0.3s; }
+.icon {
+	width: 1em; height: 1em;
+	vertical-align: -0.15em;
+	fill: currentColor;
+	overflow: hidden;
 }
-li{
-	list-style: none;
-	transition: all 0.3s;
-}
-#canvas{
-	background: #fff;
-	display: block;
-	position: fixed;
-	top: 0;
-	left: 0;
-}
+#canvas{ background: #fff; display: block; position: fixed; top: 0; left: 0; }
 
-.userBtn{
-	position: fixed;
-	top: 4px;
-	left: 0px;
-}
-.userBtn > svg{
-	height: 2em;
-	width: 2em;
-	fill: #183545;
-	margin: 0 10px;
-	transition: all 0.3s;
-  cursor:pointer;
-}
-.userBtn > .eraser{
-}
+.userBtn{ position: fixed; top: 4px; left: 0px; }
+.userBtn > svg{ height: 2em; width: 2em; fill: #183545; margin: 0 10px; transition: all 0.3s; cursor:pointer; }
 .userBtn > .size{
   margin: 0 20px;
   transform: scale(2.2);
@@ -53,6 +34,7 @@ li{
 	border:1px solid gray;
 	border-radius: 50%;
 	margin: 20px 0;
+	cursor: pointer;
 }
 
 .userBtn > 	.brushColor > .black{
@@ -70,7 +52,6 @@ li{
 /*按钮激活状态*/
 .btnActive{
 	transform: scale(1.3);
-	box-shadow: 0 0 3px 1px rgba(100, 100, 100, 1); 
 }
 /*svg激活状态*/
 .userBtn > svg.svgActive{
