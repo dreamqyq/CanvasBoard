@@ -9,6 +9,7 @@ class Draw {
     this.isClear = false
     this.isUsing = false
     this.drawWidth = 1
+    this.color = '#000'
     this.autoResizeCanvas()
     this.userAction(this.domView)
     this.changeSize()
@@ -29,9 +30,7 @@ class Draw {
     this.context.lineWidth = 2
     // 用户选择笔刷or橡皮擦
     this._userSelect()
-    // 笔刷重置（笔刷大小颜色）
     this._brushReset()
-    // 图像下载
     this.downloadPic()
     // 特性检测
     if (document.body.ontouchstart !== undefined) {
@@ -69,7 +68,11 @@ class Draw {
   drawLine(x1, y1, x2, y2) {
     this.context.beginPath()
     this.context.moveTo(x1, y1)
-    this.context.lineTo(x2, y2)
+    if(Math.abs(x1-x2) < 3 || Math.abs(y1-y2) < 3){
+      this.context.quadraticCurveTo((x1+x2)/2, (y1+y2)/2, x2, y2)
+    }else{
+      this.context.lineTo(x2, y2)
+    }
     this.context.stroke()
     this.context.closePath()
   }
@@ -102,6 +105,7 @@ class Draw {
       }
     }
   }
+  // 绘图逻辑主函数
   _useMouthOrTouch(tag,methods) {
     let lastPoint = {
       x: undefined,
@@ -143,6 +147,7 @@ class Draw {
       this.isUsing = false
     })
   }
+
   _userSelect() {
     let brushBtn = this.byId('brush')
     let eraserBtn = this.byId('eraser')
@@ -163,14 +168,21 @@ class Draw {
     this.context.clearRect(x - 5, y - 5, 10, 10)
   }
 
+  // 颜色按钮事件监听
   _colorListener(element, eventType, selector, callback) {
+    let colorMore = element.querySelector('#colorMore')
     element.addEventListener(eventType, event => {
       let currentColor = event.target
       if (currentColor.matches(selector)) {
-        let color = currentColor.dataset.color
+        this.color = currentColor.dataset.color
+        colorMore.value = this.color
         let siblings = element.children
-        callback.call(currentColor, event, currentColor, color, siblings, element)
+        callback.call(currentColor, event, currentColor, siblings, element)
       }
+    })
+    colorMore.addEventListener('change', event => {
+      this.color = event.target.value
+      this._brushColor()
     })
   }
 
@@ -182,14 +194,18 @@ class Draw {
       this.drawRect(0, 0, canvas.width, canvas.height, '#fff')
     })
     //颜色更改
-    this._colorListener(brushColors, 'click', 'li', (event, current, color, siblings, parent) => {
-      this.context.fillStyle = color
-      this.context.strokeStyle = color
+    this._colorListener(brushColors, 'click', 'li', (event, current, siblings, parent) => {
+      this._brushColor()
       for (let i = 0; i < siblings.length; i++) {
         siblings[i].classList.remove('btnActive')
       }
       current.classList.add('btnActive')
     })
+  }
+
+  _brushColor () {
+    this.context.fillStyle = this.color
+    this.context.strokeStyle = this.color
   }
 
   // 下载图像函数
