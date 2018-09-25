@@ -2,6 +2,9 @@
 
 #### 本项目的目的是用canvas做出一个画板，并支持PC端和移动端的使用
 
+## V2.1
+- 解决画笔断点 bug： `ctx.lineCap = "round";`
+
 ## V2.0
 
 - JS 代码重新整理，使用了 ES 6 的 class 语法

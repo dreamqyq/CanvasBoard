@@ -67,12 +67,9 @@ class Draw {
 
   drawLine(x1, y1, x2, y2) {
     this.context.beginPath()
+    this.context.lineCap = "round"
     this.context.moveTo(x1, y1)
-    if(Math.abs(x1-x2) < 3 || Math.abs(y1-y2) < 3){
-      this.context.quadraticCurveTo((x1+x2)/2, (y1+y2)/2, x2, y2)
-    }else{
-      this.context.lineTo(x2, y2)
-    }
+    this.context.lineTo(x2, y2)
     this.context.stroke()
     this.context.closePath()
   }
